@@ -7,8 +7,8 @@ export default function SidebarTemplate() {
 	// const activeClassName =
 	//     "block text-white text-center bg-gray-600 py-2 w-full rounded hover:text-white";
 	const defaultClassName =
-		"text-black hover:text-black relative cursor-pointer transition-all duration-300 after:w-full after:-translate-x-[150%] after:h-[2px] after:absolute after:content-[''] after:-bottom-1 after:left-0 hover:after:w-full hover:after:translate-x-0 hover:after:bg-black after:transition-all after:duration-300";
-	const activeClassName = 'text-rose-500 hover:text-rose-500';
+		"text-black hover:text-black relative cursor-pointer transition-all duration-300 after:w-full after:-translate-x-[150%] after:h-[2px] after:absolute after:content-[''] after:-bottom-1 after:left-0 hover:after:w-full hover:after:translate-x-0 hover:after:bg-black after:transition-all after:duration-300 text-center";
+	const activeClassName = 'text-rose-500 hover:text-rose-500  text-center';
 	return (
 		<div className='fixed left-0 bottom-0 top-20 h-full w-60'>
 			<div className='h-full w-full shadow-md'>
