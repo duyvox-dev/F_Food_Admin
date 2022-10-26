@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
-import { Form, Input, message, InputNumber, Button, Upload } from 'antd';
+import { Form, Input, message, InputNumber, Select } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { createProduct, updateProduct } from '../../../redux/productSlice';
 import { UploadOutlined } from '@ant-design/icons';
+const { Option } = Select;
 export default function EditProductForm() {
 	const dispatch = useDispatch();
+	const { categoryList } = useSelector((state) => state.categorySlice);
 	const validateMessages = {
 		required: '${label} không được để trống',
 		whitespace: '${label} không được để trống',
@@ -13,13 +15,13 @@ export default function EditProductForm() {
 		},
 	};
 	const onFinish = (values) => {
+		// console.log(values);
 		dispatch(createProduct(values));
 	};
 
 	const onFinishFailed = (errorInfo) => {
 		message.error('Tạo sản phẩm thất bại, vui lòng kiểm tra lại thông tin');
 	};
-
 	return (
 		<div>
 			<div className='rounded-xl'>
@@ -49,17 +51,30 @@ export default function EditProductForm() {
 							<Input />
 						</Form.Item>
 						<Form.Item
-							initialValue=''
+							initialValue={1}
 							label='Danh mục'
 							name='categoryId'
 							hasFeedback
 							rules={[
 								{
 									required: true,
-									whitespace: true,
 								},
 							]}>
-							<Input />
+							<Select
+								defaultValue={categoryList[0]}
+								// name='categoryId'
+								// label='Danh mục'
+								style={{
+									width: '100%',
+								}}>
+								{categoryList?.map((category, index) => {
+									return (
+										<Option value={category.id} key={index}>
+											{category.categoryName}
+										</Option>
+									);
+								})}
+							</Select>
 						</Form.Item>
 						<Form.Item
 							initialValue=''
@@ -111,7 +126,7 @@ export default function EditProductForm() {
 									required: true,
 								},
 							]}>
-							<InputNumber min={1} max={10} style={{ width: '100%' }} />
+							<InputNumber min={1} max={999} style={{ width: '100%' }} />
 						</Form.Item>
 						<Form.Item
 							initialValue=''

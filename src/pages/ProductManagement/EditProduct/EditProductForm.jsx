@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, message, InputNumber } from 'antd';
+import { Form, Input, message, InputNumber, Select } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleEditProductModal, updateProduct } from '../../../redux/productSlice';
 import _ from 'lodash';
-import { current } from '@reduxjs/toolkit';
-import FormItem from 'antd/lib/form/FormItem';
+const { Option } = Select;
 export default function EditProductForm() {
 	const dispatch = useDispatch();
 	const { currentProduct } = useSelector((state) => state.productSlice);
+	const { categoryList } = useSelector((state) => state.categorySlice);
 
 	const [form] = Form.useForm();
 
@@ -113,7 +113,7 @@ export default function EditProductForm() {
 								<Input />
 							</Form.Item>
 						</Form.Item>
-						<Form.Item
+						{/* <Form.Item
 							//initialValue={currentProduct?.categoryId}
 							label='Danh mục'
 							//name='categoryId'
@@ -123,11 +123,34 @@ export default function EditProductForm() {
 									required: true,
 									whitespace: true,
 								},
+							]}> */}
+						<Form.Item
+							initialValue={currentProduct?.categoryId}
+							label='Danh mục'
+							name='categoryId'
+							hasFeedback
+							rules={[
+								{
+									required: true,
+								},
 							]}>
-							<Form.Item name='categoryId'>
-								<Input />
-							</Form.Item>
+							<Select
+								defaultValue={categoryList[currentProduct?.categoryId]}
+								// name='categoryId'
+								// label='Danh mục'
+								style={{
+									width: '100%',
+								}}>
+								{categoryList?.map((category, index) => {
+									return (
+										<Option value={category.id} key={index}>
+											{category.categoryName}
+										</Option>
+									);
+								})}
+							</Select>
 						</Form.Item>
+						{/* </Form.Item> */}
 						<Form.Item
 							//initialValue={currentProduct?.detail}
 							label='Miêu tả'
@@ -185,7 +208,7 @@ export default function EditProductForm() {
 								},
 							]}>
 							<Form.Item name='quantity'>
-								<InputNumber min={1} max={10} style={{ width: '100%' }} />
+								<InputNumber min={1} max={999} style={{ width: '100%' }} />
 							</Form.Item>
 						</Form.Item>
 						<Form.Item

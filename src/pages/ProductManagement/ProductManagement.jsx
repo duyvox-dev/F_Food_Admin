@@ -6,6 +6,7 @@ import TableProductManagement from './TableProductManagement';
 import EditProductModal from './EditProduct/EditProductModal';
 import AddProductModal from './AddProduct/AddProductModal';
 import _ from 'lodash';
+import { getCategoryList } from '../../redux/categorySlice';
 export default function ProductManagement() {
 	const { user } = useSelector((state) => state.authSlice);
 	let navigate = useNavigate();
@@ -17,7 +18,8 @@ export default function ProductManagement() {
 	}, [user]);
 
 	useEffect(() => {
-		dispatch(getProductList({ page: 1, pageSize: 10 }));
+		dispatch(getProductList());
+		dispatch(getCategoryList());
 	}, []);
 	const handleAddProduct = () => {
 		dispatch(toggleAddProductModal());
