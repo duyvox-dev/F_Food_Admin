@@ -12,9 +12,9 @@ export default function ProductManagement() {
 	const dispatch = useDispatch();
 	const [searchKey, setSearchKey] = useState('');
 
-	// useEffect(() => {
-	// 	if (_.isEmpty(user)) navigate('/');
-	// }, [user]);
+	useEffect(() => {
+		if (_.isEmpty(user)) navigate('/');
+	}, [user]);
 
 	useEffect(() => {
 		dispatch(getProductList({ page: 1, pageSize: 10 }));
