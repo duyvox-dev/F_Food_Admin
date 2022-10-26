@@ -47,7 +47,7 @@ export const updateProduct = createAsyncThunk('productSlice/updateProduct', asyn
 		const result = await productService.updateProductInfo(data);
 
 		thunkAPI.dispatch(toggleEditProductModal());
-		thunkAPI.dispatch(getProductList());
+		thunkAPI.dispatch(getProductList({ page: 1, pageSize: 10 }));
 		message.success('Cập nhật sản phẩm thành công!');
 
 		return result.data;
