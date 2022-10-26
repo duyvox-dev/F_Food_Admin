@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
-import { Form, Input, message, InputNumber } from 'antd';
+import { Form, Input, message, InputNumber, Button, Upload } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { createProduct, updateProduct } from '../../../redux/productSlice';
+import { UploadOutlined } from '@ant-design/icons';
 export default function EditProductForm() {
 	const dispatch = useDispatch();
 	const validateMessages = {
@@ -18,6 +19,7 @@ export default function EditProductForm() {
 	const onFinishFailed = (errorInfo) => {
 		message.error('Tạo sản phẩm thất bại, vui lòng kiểm tra lại thông tin');
 	};
+
 	return (
 		<div>
 			<div className='rounded-xl'>
@@ -48,8 +50,8 @@ export default function EditProductForm() {
 						</Form.Item>
 						<Form.Item
 							initialValue=''
-							label='Tỉnh'
-							name='province'
+							label='Danh mục'
+							name='categoryId'
 							hasFeedback
 							rules={[
 								{
@@ -61,8 +63,8 @@ export default function EditProductForm() {
 						</Form.Item>
 						<Form.Item
 							initialValue=''
-							label='Quốc gia'
-							name='country'
+							label='Miêu tả'
+							name='detail'
 							hasFeedback
 							rules={[
 								{
@@ -74,8 +76,60 @@ export default function EditProductForm() {
 						</Form.Item>
 						<Form.Item
 							initialValue=''
-							label='Đánh giá'
-							name='valueate'
+							label='Hình ảnh'
+							name='image'
+							hasFeedback
+							rules={[
+								{
+									required: true,
+								},
+							]}>
+							{/* <Upload>
+								<Button icon={<UploadOutlined />}>Upload</Button>
+							</Upload> */}
+							<Input />
+						</Form.Item>
+						<Form.Item
+							initialValue=''
+							label='Giá'
+							name='price'
+							hasFeedback
+							rules={[
+								{
+									required: true,
+								},
+							]}>
+							<InputNumber style={{ width: '100%' }} />
+						</Form.Item>
+						<Form.Item
+							initialValue=''
+							label='Số lượng'
+							name='quantity'
+							hasFeedback
+							rules={[
+								{
+									required: true,
+								},
+							]}>
+							<InputNumber min={1} max={10} style={{ width: '100%' }} />
+						</Form.Item>
+						<Form.Item
+							initialValue=''
+							label='Product Code'
+							name='code'
+							hasFeedback
+							rules={[
+								{
+									required: true,
+									whitespace: true,
+								},
+							]}>
+							<Input />
+						</Form.Item>
+						<Form.Item
+							initialValue=''
+							label='Supplier Store ID'
+							name='supplierStoreId'
 							hasFeedback
 							rules={[
 								{

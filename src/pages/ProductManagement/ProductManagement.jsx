@@ -17,7 +17,7 @@ export default function ProductManagement() {
 	// }, [user]);
 
 	useEffect(() => {
-		dispatch(getProductList());
+		dispatch(getProductList({ page: 1, pageSize: 10 }));
 	}, []);
 	const handleAddProduct = () => {
 		dispatch(toggleAddProductModal());
