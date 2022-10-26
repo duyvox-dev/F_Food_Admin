@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Table } from 'antd';
+import { Input, Table } from 'antd';
 import { columnsProductManagement } from '../../utils/productManagement';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteProduct, getProductInfo, getProductList, toggleEditProductModal } from '../../redux/productSlice';
 export default function TableProductManagement() {
 	const { productFilterredList, productList } = useSelector((state) => state.productSlice);
+	const { categoryList } = useSelector((state) => state.categorySlice);
 	const [productData, setProductData] = useState([]);
 	const dispatch = useDispatch();
 
-	useEffect(() => {
-		setProductData(productList.results);
-	}, [productList]);
+	const [searchText, setSearchText] = useState('');
 
 	// useEffect(() => {
 	// 	if (productFilterredList) {
@@ -25,7 +24,9 @@ export default function TableProductManagement() {
 		dispatch(getProductList({ page: 1, pageSize: 10 }));
 	}, []);
 
-	//console.log('data: ', data.totalNumberOfRecords);
+	useEffect(() => {
+		setProductData(productList.results);
+	}, [productList]);
 
 	const handleChangePage = (page) => {
 		const currentPage = page?.current ?? 1;
@@ -49,6 +50,11 @@ export default function TableProductManagement() {
 				}
 				return 0;
 			},
+			width: '25%',
+			filteredValue: [searchText],
+			onFilter: (value, record) => {
+				return String(record.name).toLowerCase().includes(value.toLowerCase());
+			},
 		},
 
 		{
@@ -56,18 +62,28 @@ export default function TableProductManagement() {
 			dataIndex: 'categoryId',
 			key: 'categoryId',
 			align: 'center',
+			width: '15%',
+			render: (value, record) => {
+				const filterCategory = categoryList.filter((item) => item.id === record.categoryId);
+				const results = filterCategory.map((item) => {
+					return <>{item.categoryName}</>;
+				});
+				return results;
+			},
 		},
 		{
 			title: 'Miêu tả',
 			dataIndex: 'detail',
 			key: 'detail',
 			align: 'center',
+			width: '20%',
 		},
 		{
 			title: 'Hình ảnh',
 			dataIndex: 'image',
 			key: 'image',
 			align: 'center',
+			width: '10%',
 			render: (img) => {
 				return (
 					<div className='flex justify-center'>
@@ -82,6 +98,7 @@ export default function TableProductManagement() {
 			dataIndex: 'price',
 			key: 'price',
 			align: 'center',
+			width: '10%',
 		},
 
 		{
@@ -113,6 +130,17 @@ export default function TableProductManagement() {
 
 	return (
 		<div>
+			<Input
+				style={{ border: '2px solid black', marginBottom: '20px', borderRadius: '5px', padding: '10px' }}
+				placeholder='Nhập vào sản phẩm bạn muốn tìm'
+				allowClear
+				onSearch={(value) => {
+					setSearchText(value);
+				}}
+				onChange={(e) => {
+					setSearchText(e.target.value);
+				}}
+			/>
 			<Table
 				bordered
 				dataSource={productData}
@@ -124,7 +152,6 @@ export default function TableProductManagement() {
 					current: productList?.pageNumber,
 					pageSize: productList?.pageSize,
 					onChange: (page, pageSize) => {
-						console.log(page);
 						handleChangePage({ current: page, pageSize: pageSize });
 					},
 				}}></Table>

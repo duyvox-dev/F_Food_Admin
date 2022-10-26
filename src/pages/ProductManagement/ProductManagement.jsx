@@ -39,13 +39,7 @@ export default function ProductManagement() {
 					onClick={handleAddProduct}>
 					Thêm Sản Phẩm
 				</span>
-				<input
-					className='w-full h-12 border-2 border-black rounded-md px-5 text-lg'
-					type='text'
-					placeholder='Nhập vào họ tên bạn muốn tìm'
-					value={searchKey}
-					onChange={(e) => handleSearch(e.target.value)}
-				/>
+
 				<TableProductManagement />
 			</div>
 		</div>
