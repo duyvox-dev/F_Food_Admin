@@ -14,10 +14,10 @@ export const createProduct = createAsyncThunk('productSlice/createProduct', asyn
 	}
 });
 
-export const getProductList = createAsyncThunk('locatiohSlice/getProductList', async (thunkAPI) => {
+export const getProductList = createAsyncThunk('locatiohSlice/getProductList', async (pagination, thunkAPI) => {
 	try {
-		const result = await productService.getProductList();
-		return result.data.results;
+		const result = await productService.getProductList(pagination);
+		return result.data;
 	} catch (error) {
 		message.error(error.response.data.message);
 		return thunkAPI.rejectWithValue();
@@ -44,15 +44,15 @@ export const deleteProduct = createAsyncThunk('productSlice/deleteProduct', asyn
 });
 export const updateProduct = createAsyncThunk(
 	'productSlice/updateProduct',
-	async ({ ProductID, ProductData }, thunkAPI) => {
+	async (data, thunkAPI) => {
 		try {
-			const result = await productService.updateProductInfo(ProductID, ProductData);
+			const result = await productService.updateProductInfo(data);
 
 			thunkAPI.dispatch(toggleEditProductModal());
 			thunkAPI.dispatch(getProductList());
 			message.success('Cập nhật sản phẩm thành công!');
 
-			// return result.data;
+			return result.data;
 		} catch (error) {
 			message.error(error.response.data.message);
 			return thunkAPI.rejectWithValue();
@@ -100,15 +100,15 @@ const productSlice = createSlice({
 			state.productList = action.payload;
 			state.productFilterredList = action.payload;
 		},
-		[getProductList.rejected]: (state, action) => {},
+		[getProductList.rejected]: (state, action) => { },
 		[getProductInfo.pending]: (state, action) => {
-			state.currentProduct = [];
+			state.currentProduct = action.payload;
 		},
 		[getProductInfo.fulfilled]: (state, action) => {
 			state.currentProduct = action.payload;
 		},
-		[getProductInfo.rejected]: (state, action) => {},
-		[filterProduct.pending]: (state, action) => {},
+		[getProductInfo.rejected]: (state, action) => { },
+		[filterProduct.pending]: (state, action) => { },
 		[filterProduct.fulfilled]: (state, action) => {
 			state.productFilterredList = action.payload;
 		},

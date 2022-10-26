@@ -1,4 +1,5 @@
 import { deleteProduct, toggleEditProductModal, getProductInfo } from '../redux/productSlice';
+
 export const columnsProductManagement = [
 	{
 		title: 'Tên',
@@ -61,7 +62,8 @@ export const columnsProductManagement = [
 					<button
 						className='text-white bg-blue-600 px-4 py-2 rounded'
 						onClick={() => {
-							dispatch(getProductInfo(record._id));
+							console.log("id: ", record.id)
+							dispatch(getProductInfo(record.id));
 							dispatch(toggleEditProductModal());
 						}}>
 						Sửa

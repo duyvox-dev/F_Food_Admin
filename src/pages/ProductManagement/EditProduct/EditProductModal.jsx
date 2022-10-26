@@ -10,6 +10,7 @@ export default function EditProductModal() {
 	let onClose = () => {
 		dispatch(toggleEditProductModal());
 	};
+
 	return (
 		<div>
 			<Modal
