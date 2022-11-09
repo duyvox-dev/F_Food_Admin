@@ -1,5 +1,7 @@
 import ThemeLayout from '../HOC/ThemeLayout';
 import LoginPage from '../pages/LoginPage/LoginPage';
+import MenuManagement from '../pages/MenuManagement/MenuManagement';
+import ProductInMenu from '../pages/ProductInMenu/ProductInMenu';
 import ProductManagement from '../pages/ProductManagement/ProductManagement';
 export const sellerRoutes = [
 	{
@@ -11,4 +13,12 @@ export const sellerRoutes = [
 		path: '/product',
 		component: <ThemeLayout Component={ProductManagement} />,
 	},
+	{
+		path: '/product-in-menu',
+		component: <ThemeLayout Component={ProductInMenu} />,
+	},
+	{
+		path: '/menu',
+		component: <ThemeLayout Component={MenuManagement} />
+	}
 ];

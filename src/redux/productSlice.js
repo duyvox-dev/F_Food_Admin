@@ -71,6 +71,70 @@ export const filterProduct = createAsyncThunk('productSlice/filterProduct', asyn
 	}
 });
 
+// product in menu
+export const getProductListInMenu = createAsyncThunk('productList/getProductListInMenu', async (pagination, thunkAPI) => {
+	try {
+		const result = await productService.getProductListInMenu(pagination);
+		return result.data;
+	} catch (error) {
+		message.error(error.response.data.message);
+		return thunkAPI.rejectWithValue();
+	}
+});
+
+export const getProductInMenuInfo = createAsyncThunk('productSlice/getProductInMenuInfo', async (productID, thunkAPI) => {
+	console.log("Data api:", productID)
+	try {
+		const result = await productService.getProductInMenuInfo(productID);
+		return result.data;
+	} catch (error) {
+		return thunkAPI.rejectWithValue();
+	}
+});
+
+
+export const createProductInMenu = createAsyncThunk('productSlice/createProductInMenu', async (productInfo, thunkAPI) => {
+	try {
+		const result = await productService.createProductInMenu(productInfo);
+		thunkAPI.dispatch(toggleAddProductInMenu());
+		thunkAPI.dispatch(getProductListInMenu({ page: 1, pageSize: 10 }));
+		message.success('Tạo sản phẩm vào menu thành công!');
+		return result.data;
+	} catch (error) {
+		// message.error(error.response.data.message);
+		return thunkAPI.rejectWithValue();
+	}
+});
+
+export const updateProductInMenu = createAsyncThunk('productSlice/updateProductInMenu', async (data, thunkAPI) => {
+	console.log("data api; ", data)
+	try {
+		const result = await productService.updateProductInMenu(data);
+
+		thunkAPI.dispatch(toggleEditProductInMenu());
+		thunkAPI.dispatch(getProductListInMenu({ page: 1, pageSize: 10 }));
+		message.success('Cập nhật sản phẩm thành công!');
+
+		return result.data;
+	} catch (error) {
+		message.error(error.response.data.message);
+		return thunkAPI.rejectWithValue();
+	}
+});
+
+export const deleteProductInMenu = createAsyncThunk('productSlice/deleteProductInMenu', async (productID, thunkAPI) => {
+	try {
+		const result = await productService.deleteProductInMenu(productID);
+		thunkAPI.dispatch(getProductListInMenu({ page: 1, pageSize: 10 }));
+		message.success('Xoá sản phẩm thành công!');
+		return result.data;
+	} catch (error) {
+		message.error(error.response.data.message);
+		return thunkAPI.rejectWithValue();
+	}
+});
+
+
 const productSlice = createSlice({
 	name: 'productSlice',
 	initialState: {
@@ -79,6 +143,11 @@ const productSlice = createSlice({
 		currentProduct: {},
 		modalEdit: false,
 		modalAdd: false,
+
+		productListInMenu: [],
+		currentProductInMenu: {},
+		modalAddProductInMenu: false,
+		modalEditProductInMenu: false,
 	},
 	reducers: {
 		toggleEditProductModal: (state, action) => {
@@ -86,6 +155,12 @@ const productSlice = createSlice({
 		},
 		toggleAddProductModal: (state, action) => {
 			state.modalAdd = !state.modalAdd;
+		},
+		toggleAddProductInMenu: (state, action) => {
+			state.modalAddProductInMenu = !state.modalAddProductInMenu
+		},
+		toggleEditProductInMenu: (state, action) => {
+			state.modalEditProductInMenu = !state.modalEditProductInMenu
 		},
 	},
 	extraReducers: {
@@ -97,20 +172,37 @@ const productSlice = createSlice({
 			state.productList = action.payload;
 			state.productFilterredList = action.payload;
 		},
-		[getProductList.rejected]: (state, action) => {},
+		[getProductList.rejected]: (state, action) => { },
 		[getProductInfo.pending]: (state, action) => {
 			state.currentProduct = action.payload;
 		},
 		[getProductInfo.fulfilled]: (state, action) => {
 			state.currentProduct = action.payload;
 		},
-		[getProductInfo.rejected]: (state, action) => {},
-		[filterProduct.pending]: (state, action) => {},
+		[getProductInfo.rejected]: (state, action) => { },
+		[filterProduct.pending]: (state, action) => { },
 		[filterProduct.fulfilled]: (state, action) => {
 			state.productFilterredList = action.payload;
 		},
+
+		// get product list in menu
+		[getProductListInMenu.pending]: (state, action) => {
+			state.productListInMenu = [];
+		},
+		[getProductListInMenu.fulfilled]: (state, action) => {
+			state.productListInMenu = action.payload;
+		},
+		[getProductListInMenu.rejected]: (state, action) => { },
+
+		[getProductInMenuInfo.pending]: (state, action) => {
+			state.currentProductInMenu = action.payload;
+		},
+		[getProductInMenuInfo.fulfilled]: (state, action) => {
+			state.currentProductInMenu = action.payload;
+		},
+		[getProductInMenuInfo.rejected]: (state, action) => { },
 	},
 });
 const { reducer, actions } = productSlice;
-export const { toggleEditProductModal, toggleAddProductModal } = actions;
+export const { toggleEditProductModal, toggleAddProductModal, toggleAddProductInMenu, toggleEditProductInMenu } = actions;
 export default reducer;
