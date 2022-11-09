@@ -4,54 +4,49 @@ import { columnsProductManagement } from '../../utils/productManagement';
 import { useDispatch, useSelector } from 'react-redux';
 import {
 	deleteProduct,
+	deleteProductInMenu,
 	getProductInfo,
+	getProductInMenuInfo,
 	getProductList,
+	getProductListInMenu,
 	toggleAddProductInMenu,
+	toggleEditProductInMenu,
 	toggleEditProductModal,
 } from '../../redux/productSlice';
-export default function TableProductManagement() {
-	const { productFilterredList, productList } = useSelector((state) => state.productSlice);
+export default function TableProductInMenu() {
+	const { productListInMenu } = useSelector((state) => state.productSlice);
 	const { categoryList } = useSelector((state) => state.categorySlice);
 	const [productData, setProductData] = useState([]);
 	const dispatch = useDispatch();
 
 	const [searchText, setSearchText] = useState('');
 
-	// useEffect(() => {
-	// 	if (productFilterredList) {
-	// 		let arrNew = productFilterredList.map((item) => {
-	// 			return { ...item, action: dispatch };
-	// 		});
-	// 		setProductData(arrNew);
-	// 	}
-	// }, [productFilterredList]);
-
 	useEffect(() => {
-		dispatch(getProductList({ page: 1, pageSize: 10 }));
+		dispatch(getProductListInMenu({ page: 1, pageSize: 10 }));
 	}, []);
 
 	useEffect(() => {
-		setProductData(productList.results);
-	}, [productList]);
+		setProductData(productListInMenu?.results);
+	}, [productListInMenu]);
 
 	const handleChangePage = (page) => {
 		const currentPage = page?.current ?? 1;
 		const pageSize = page?.pageSize ?? 10;
-		dispatch(getProductList({ page: currentPage, pageSize: pageSize }));
+		dispatch(getProductListInMenu({ page: currentPage, pageSize: pageSize }));
 	};
 
 	const columnsProductManagement1 = [
 		{
 			title: 'Tên',
-			dataIndex: 'name',
-			key: 'name',
+			dataIndex: 'productName',
+			key: 'productName',
 			align: 'center',
 			sorter: true,
 			sorter: (a, b) => {
-				if (a.name > b.name) {
+				if (a.productName > b.productName) {
 					return 1;
 				}
-				if (a.name < b.name) {
+				if (a.productName < b.productName) {
 					return -1;
 				}
 				return 0;
@@ -59,23 +54,23 @@ export default function TableProductManagement() {
 			width: '25%',
 			filteredValue: [searchText],
 			onFilter: (value, record) => {
-				return String(record.name).toLowerCase().includes(value.toLowerCase());
+				return String(record.productName).toLowerCase().includes(value.toLowerCase());
 			},
 		},
 
 		{
 			title: 'Danh mục',
-			dataIndex: 'categoryId',
-			key: 'categoryId',
+			dataIndex: 'categoryName',
+			key: 'categoryName',
 			align: 'center',
 			width: '15%',
-			render: (value, record) => {
-				const filterCategory = categoryList.filter((item) => item.id === record.categoryId);
-				const results = filterCategory.map((item) => {
-					return <>{item.categoryName}</>;
-				});
-				return results;
-			},
+		},
+		{
+			title: 'Tên Menu',
+			dataIndex: 'menuName',
+			key: 'menuName',
+			align: 'center',
+			width: '15%',
 		},
 		{
 			title: 'Miêu tả',
@@ -116,24 +111,16 @@ export default function TableProductManagement() {
 				return (
 					<div className='flex justify-center space-x-4 w-full h-full'>
 						<button
-							className='text-white bg-green-600 px-4 py-2 rounded'
-							onClick={() => {
-								dispatch(getProductInfo(record.id));
-								dispatch(toggleAddProductInMenu());
-							}}>
-							Thêm vào menu
-						</button>
-						<button
 							className='text-white bg-blue-600 px-4 py-2 rounded'
 							onClick={() => {
-								dispatch(getProductInfo(record.id));
-								dispatch(toggleEditProductModal());
+								dispatch(getProductInMenuInfo(record.productId));
+								dispatch(toggleEditProductInMenu());
 							}}>
 							Sửa
 						</button>
 						<button
 							className='text-white bg-red-600 px-4 py-2 rounded'
-							onClick={() => dispatch(deleteProduct(record._id))}>
+							onClick={() => dispatch(deleteProductInMenu(record.productId))}>
 							Xóa
 						</button>
 					</div>
@@ -161,10 +148,10 @@ export default function TableProductManagement() {
 				columns={columnsProductManagement1}
 				rowKey={'_id'}
 				pagination={{
-					total: productList?.totalNumberOfRecords,
+					total: productListInMenu?.totalNumberOfRecords,
 					showTotal: (total) => `Total ${total} products`,
-					current: productList?.pageNumber,
-					pageSize: productList?.pageSize,
+					current: productListInMenu?.pageNumber,
+					pageSize: productListInMenu?.pageSize,
 					onChange: (page, pageSize) => {
 						handleChangePage({ current: page, pageSize: pageSize });
 					},

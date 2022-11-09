@@ -1,0 +1,165 @@
+import React, { useEffect, useState } from 'react';
+import { Form, Input, message, InputNumber, Select } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleEditProductModal, updateProduct } from '../../../redux/productSlice';
+import _ from 'lodash';
+import { toggleEditMenuModal, updateMenu } from '../../../redux/menuSlice';
+const { Option } = Select;
+export default function EditMenuForm() {
+	const dispatch = useDispatch();
+	const { currentMenu } = useSelector((state) => state.menuSlice);
+
+	const [form] = Form.useForm();
+
+	const [initValue, setInitValue] = useState([]);
+
+	useEffect(() => {
+		setInitValue({
+			menuName: currentMenu?.menuName,
+			type: currentMenu?.type,
+			timeSlotId: currentMenu?.timeSlotId,
+		});
+		setInitValue([
+			{
+				name: ['menuName'],
+				value: currentMenu?.menuName,
+			},
+			{
+				name: ['type'],
+				value: currentMenu?.type,
+			},
+			{
+				name: ['timeSlotId'],
+				value: currentMenu?.timeSlotId,
+			},
+		]);
+	}, []);
+
+	console.log('current menu: ', currentMenu);
+
+	const validateMessages = {
+		required: '${label} không được để trống',
+		whitespace: '${label} không được để trống',
+		types: {
+			number: '${label} không hợp lệ',
+		},
+	};
+	const onFinish = (values) => {
+		console.log('value: ', values);
+		dispatch(
+			updateMenu({
+				menuID: currentMenu.id,
+				newMenu: values,
+			})
+		);
+	};
+
+	const onFinishFailed = (errorInfo) => {
+		message.error('Sửa thông tin thất bại, vui lòng kiểm tra lại thông tin');
+		dispatch(toggleEditMenuModal());
+	};
+	return (
+		<div>
+			<div className='rounded-xl'>
+				<div>
+					<Form
+						//form={form}
+						className='font-medium'
+						labelCol={{ span: 5 }}
+						validateMessages={validateMessages}
+						name='basic'
+						initialValues={{
+							remember: true,
+						}}
+						fields={initValue}
+						onFinish={onFinish}
+						onFinishFailed={onFinishFailed}
+						autoComplete='off'>
+						<Form.Item
+							//initialValue={currentProduct?.name}
+							label='Tên menu'
+							//name='name'
+							hasFeedback
+							rules={[
+								{
+									required: true,
+									whitespace: true,
+								},
+							]}>
+							<Form.Item name='menuName'>
+								<Input />
+							</Form.Item>
+						</Form.Item>
+
+						{/* <Form.Item
+							initialValue={currentProduct?.categoryId}
+							label='Danh mục'
+							name='categoryId'
+							hasFeedback
+							rules={[
+								{
+									required: true,
+								},
+							]}>
+							<Select
+								defaultValue={categoryList[currentProduct?.categoryId]}
+								// name='categoryId'
+								// label='Danh mục'
+								style={{
+									width: '100%',
+								}}>
+								{categoryList?.map((category, index) => {
+									return (
+										<Option value={category.id} key={index}>
+											{category.categoryName}
+										</Option>
+									);
+								})}
+							</Select>
+						</Form.Item> */}
+
+						<Form.Item
+							//initialValue={currentProduct?.quantity}
+							label='Type'
+							//name='quantity'
+							hasFeedback
+							rules={[
+								{
+									required: true,
+								},
+							]}>
+							<Form.Item name='type'>
+								<InputNumber min={1} max={999} style={{ width: '100%' }} />
+							</Form.Item>
+						</Form.Item>
+						<Form.Item
+							//initialValue={currentProduct?.supplierStoreId}
+							label='Time slot'
+							//name='supplierStoreId'
+							hasFeedback
+							rules={[
+								{
+									required: true,
+								},
+							]}>
+							<Form.Item name='timeSlotId'>
+								<InputNumber style={{ width: '100%' }} />
+							</Form.Item>
+						</Form.Item>
+
+						<Form.Item className='truncate' style={{ margin: '0' }}>
+							<button
+								className="p-3 relative text-white w-full rounded-lg font-medium uppercase text-lg after:content-[''] after:w-full after:bg-white after:absolute after:top-full after:h-full after:left-0 after:text-white after:rounded-lg after:duration-300 after:hover:-translate-y-full after:hover:bg-[#ff5a5f] after:mix-blend-screen"
+								style={{
+									backgroundImage:
+										'radial-gradient(circle at center,#FF385C 0%,#E61E4D 27.5%,#E31C5F 40%,#D70466 57.5%, #BD1E59 75%,#BD1E59 100%',
+								}}>
+								<span>Cập nhật</span>
+							</button>
+						</Form.Item>
+					</Form>
+				</div>
+			</div>
+		</div>
+	);
+}

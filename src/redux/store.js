@@ -3,11 +3,14 @@ import authSlice from './authSlice';
 import productSlice from './productSlice';
 import loadingSlice from './loadingSlice';
 import categorySlice from './categorySlice';
+import menuSlice from './menuSlice';
+
 export const store = configureStore({
 	reducer: {
 		authSlice,
 		loadingSlice,
 		productSlice,
 		categorySlice,
+		menuSlice,
 	},
 });
