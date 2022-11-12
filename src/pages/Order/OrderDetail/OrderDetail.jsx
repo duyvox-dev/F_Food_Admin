@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, message, InputNumber, Select } from 'antd';
+import { Table } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { vndCurrencyFormat } from '../../../utils/currency';
-import { formatColorStatus } from '../../../utils/formatColorStatus';
 import _ from 'lodash';
 import { getListTimeSlot } from '../../../redux/settingSlice';
-
-const { Option } = Select;
+import moment from 'moment/moment';
 export default function OrderDetail() {
 	const dispatch = useDispatch();
 	const { currentOrder } = useSelector((state) => state.orderSlice);
@@ -37,7 +34,20 @@ export default function OrderDetail() {
 			name: 'Đã giao',
 		},
 	];
-
+	const columns = [
+		{
+			title: 'Tên sản phẩm',
+			dataIndex: 'productName',
+		},
+		{
+			title: 'Số lượng',
+			dataIndex: 'quantity',
+		},
+		{
+			title: 'Giá',
+			dataIndex: 'finalAmount',
+		},
+	];
 	// console.log('current order; ', currentOrder);
 
 	useEffect(() => {
@@ -45,60 +55,55 @@ export default function OrderDetail() {
 	}, []);
 
 	useEffect(() => {
-		console.log(listTimeSlot);
 		const timeSlotMapped = listTimeSlot?.find((time) => time.id === currentOrder.timeSlotId);
 		setTimeSlot(timeSlotMapped);
 	}, [currentOrder, listTimeSlot]);
 
-	console.log('time sot: ', timeSlot);
-
 	return (
-		<div style={{ display: 'flex', justifyContent: 'space-between' }}>
-			<div>
-				<p>Tên đơn hàng: </p>
-				<p>Thời gian đặt hàng: </p>
-				<p>Tiền hàng: </p>
-				<p>Phí Ship: </p>
-				<p>Tổng tiền hàng: </p>
-				<p>Trạng thái đơn hàng: </p>
-				<p>Hình thức nhận hàng: </p>
-				<p>Time Slot: </p>
-				<p>Phòng: </p>
-				<p>Tên cửa hàng: </p>
-				<hr />
-				<p>Tên khách hàng: </p>
-				<p>SĐT: </p>
-				<p>Email: </p>
-				<hr />
-				<p>Tên sản phẩm: </p>
-				<p>Số lượng: </p>
+		<div>
+			<h2 className=' font-semibold text-xl'>Thông tin</h2>
+			<div className='grid grid-cols-2'>
+				<p className='text-lg'>
+					Mã đơn: <b>{currentOrder.orderName}</b>
+				</p>
+				<p className='text-lg'>
+					Trạng thái: <b className=' text-rose-500'>{ORDER_STATUS_ENUM[currentOrder?.orderStatus]?.name}</b>
+				</p>
+				<p className='text-lg'>
+					Thời gian: <b>{moment(currentOrder.checkInDate).format('DD/MM/YYYY HH:MM')}</b>
+				</p>
+				<p className='text-lg'>
+					<span>
+						Địa chỉ giao hàng:{' '}
+						<b>
+							{_.isEmpty(currentOrder?.roomNumber) === false && currentOrder?.orderType === 2
+								? currentOrder?.roomNumber
+								: 'Nhận tại cửa hàng'}
+						</b>
+					</span>
+				</p>
+				<p className='text-lg'>
+					<span>
+						Thời gian giao hàng:{' '}
+						<b>
+							{timeSlot?.arriveTime} - {timeSlot?.checkoutTime}
+						</b>
+					</span>
+				</p>
+			</div>
+
+			<h2 className=' font-semibold text-xl mt-5'>Thông tin khách hàng</h2>
+			<div className='grid grid-cols-2'>
+				<p className='text-lg'>
+					Họ tên: <b>{currentOrder.customerInfo.name}</b>
+				</p>
+				<p className='text-lg'>
+					Số điện thoại: <b>{currentOrder.customerInfo.phone}</b>
+				</p>
 			</div>
 			<div>
-				<p>{currentOrder.orderName}</p>
-				<p>{currentOrder.checkInDate}</p>
-				<p>{vndCurrencyFormat(currentOrder.totalAmount)}</p>
-				<p>{vndCurrencyFormat(currentOrder.shippingFee)}</p>
-				<p style={{ fontWeight: 'bolder' }}>{vndCurrencyFormat(currentOrder.finalAmount)}</p>
-				<p style={{ fontWeight: 'bold', color: formatColorStatus(ORDER_STATUS_ENUM[currentOrder?.orderStatus]?.id) }}>
-					{ORDER_STATUS_ENUM[currentOrder?.orderStatus]?.name}
-				</p>
-				<p>
-					{_.isEmpty(currentOrder?.roomNumber) === false && currentOrder?.orderType === 2
-						? currentOrder?.roomNumber
-						: 'Nhận tại cửa hàng'}
-				</p>
-				<p>
-					{timeSlot?.arriveTime} - {timeSlot?.checkoutTime}
-				</p>
-				<p>{currentOrder.roomNumber} </p>
-				<p>{currentOrder.storeName} </p>
-				<hr />
-				<p>{currentOrder.customerInfo.name} </p>
-				<p>{currentOrder.customerInfo.phone} </p>
-				<p>{currentOrder.customerInfo.email} </p>
-				<hr />
-				<p>{currentOrder.orderDetails.map((item) => item.productName)} </p>
-				<p>{currentOrder.orderDetails.map((item) => item.quantity)} </p>
+				<h2 className=' font-semibold text-xl mt-5'>Thông tin đơn hàng</h2>
+				<Table columns={columns} dataSource={currentOrder?.orderDetails} />;
 			</div>
 		</div>
 	);
