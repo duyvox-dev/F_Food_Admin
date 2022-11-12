@@ -4,6 +4,8 @@ import productSlice from './productSlice';
 import loadingSlice from './loadingSlice';
 import categorySlice from './categorySlice';
 import menuSlice from './menuSlice';
+import orderSlice from './orderSlice';
+import settingSlice from './settingSlice';
 
 export const store = configureStore({
 	reducer: {
@@ -12,5 +14,7 @@ export const store = configureStore({
 		productSlice,
 		categorySlice,
 		menuSlice,
+		orderSlice,
+		settingSlice,
 	},
 });

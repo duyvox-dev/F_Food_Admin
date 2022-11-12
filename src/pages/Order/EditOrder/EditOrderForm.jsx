@@ -4,56 +4,64 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toggleEditProductModal, updateProduct, updateProductInMenu } from '../../../redux/productSlice';
 import _ from 'lodash';
 import { getMenuList } from '../../../redux/menuSlice';
+import { updateStatusOrder } from '../../../redux/orderSlice';
 const { Option } = Select;
-export default function EditProductInMenuForm() {
+export default function EditOrderForm() {
 	const dispatch = useDispatch();
 	const { currentProductInMenu } = useSelector((state) => state.productSlice);
-	const { menuList } = useSelector((state) => state.menuSlice);
+
+	const { currentOrder } = useSelector((state) => state.orderSlice);
 
 	const [form] = Form.useForm();
 
 	const [initValue, setInitValue] = useState([]);
 
-	const [menuData, setMenuData] = useState([]);
-
-	useEffect(() => {
-		setMenuData(menuList.results);
-	}, [menuList]);
-
-	useEffect(() => {
-		dispatch(getMenuList({ page: 1, pageSize: 50 }));
-	}, []);
+	const ORDER_STATUS_ENUM = [
+		{
+			id: 0,
+			name: 'lorem',
+		},
+		{
+			id: 1,
+			name: 'Đã huỷ',
+		},
+		{
+			id: 2,
+			name: 'Chờ xác nhận',
+		},
+		{
+			id: 3,
+			name: 'Chờ lấy hàng',
+		},
+		{
+			id: 4,
+			name: 'Đã giao',
+		},
+	];
 
 	useEffect(() => {
 		setInitValue({
-			productId: currentProductInMenu?.productId,
-			price: currentProductInMenu?.price,
+			orderId: currentOrder?.id,
+			orderStatus: currentOrder?.orderStatus,
 		});
 		setInitValue([
 			{
-				name: ['productId'],
-				value: currentProductInMenu?.productId,
+				name: ['orderId'],
+				value: currentOrder?.id,
 			},
 			{
-				name: ['price'],
-				value: currentProductInMenu?.price,
+				name: ['orderStatus'],
+				value: currentOrder?.orderStatus,
 			},
 		]);
 	}, []);
 
-	const validateMessages = {
-		required: '${label} không được để trống',
-		whitespace: '${label} không được để trống',
-		types: {
-			number: '${label} không hợp lệ',
-		},
-	};
 	const onFinish = (values) => {
 		console.log('value: ', values);
 		dispatch(
-			updateProductInMenu({
-				productID: currentProductInMenu.productId,
-				newproductInfo: values,
+			updateStatusOrder({
+				orderId: currentOrder?.id,
+				newOrderInfo: values,
 			})
 		);
 	};
@@ -69,7 +77,6 @@ export default function EditProductInMenuForm() {
 					<Form
 						className='font-medium'
 						labelCol={{ span: 5 }}
-						validateMessages={validateMessages}
 						name='basic'
 						initialValues={{
 							remember: true,
@@ -79,18 +86,31 @@ export default function EditProductInMenuForm() {
 						onFinishFailed={onFinishFailed}
 						autoComplete='off'>
 						<Form.Item
-							// initialValue=''
-							label='Menu ID'
+							//initialValue={currentProduct?.price}
+							label='ID đơn hàng'
+							//name='price'
 							hasFeedback
 							rules={[
 								{
 									required: true,
 								},
 							]}>
-							{/* <Form.Item name='menuId'>
-								<InputNumber style={{ width: '100%' }} />
-							</Form.Item> */}
-							<Form.Item name='menuId'>
+							<Form.Item name='orderId'>
+								<Input style={{ width: '100%' }} disabled />
+							</Form.Item>
+						</Form.Item>
+						<Form.Item
+							//initialValue={currentProduct?.price}
+							label='Order Status'
+							//name='price'
+							hasFeedback
+							rules={[
+								{
+									required: true,
+								},
+							]}>
+							<Form.Item name='orderStatus'>
+								{/* <Input style={{ width: '100%' }} /> */}
 								<Select
 									//defaultValue={menuData[0]}
 									// name='categoryId'
@@ -98,58 +118,16 @@ export default function EditProductInMenuForm() {
 									style={{
 										width: '100%',
 									}}>
-									{menuData?.map((menu, index) => {
-										return (
-											<Option value={menu.id} key={index}>
-												{menu.menuName}
-											</Option>
-										);
+									{ORDER_STATUS_ENUM?.map((status, index) => {
+										if (index >= 1) {
+											return (
+												<Option value={status.id} key={index}>
+													{status.name}
+												</Option>
+											);
+										}
 									})}
 								</Select>
-							</Form.Item>
-						</Form.Item>
-
-						<Form.Item
-							//initialValue={currentProduct?.price}
-							label='ID sản phẩm'
-							//name='price'
-							hasFeedback
-							rules={[
-								{
-									required: true,
-								},
-							]}>
-							<Form.Item name='productId'>
-								<Input style={{ width: '100%' }} disabled />
-							</Form.Item>
-						</Form.Item>
-						<Form.Item
-							//initialValue={currentProduct?.price}
-							label='Giá'
-							//name='price'
-							hasFeedback
-							rules={[
-								{
-									required: true,
-								},
-							]}>
-							<Form.Item name='price'>
-								<InputNumber style={{ width: '100%' }} />
-							</Form.Item>
-						</Form.Item>
-
-						<Form.Item
-							//initialValue={currentProduct?.price}
-							label='Active'
-							//name='price'
-							hasFeedback
-							rules={[
-								{
-									required: true,
-								},
-							]}>
-							<Form.Item name='active'>
-								<InputNumber style={{ width: '100%' }} />
 							</Form.Item>
 						</Form.Item>
 
