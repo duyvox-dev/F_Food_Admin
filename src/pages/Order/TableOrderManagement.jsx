@@ -127,6 +127,25 @@ export default function TableOrderManagement() {
 			key: 'orderStatus',
 			align: 'center',
 			width: '15%',
+			filters: [
+				{
+					text: 'Đã hủy',
+					value: 1,
+				},
+				{
+					text: 'Chờ xác nhận',
+					value: 2,
+				},
+				{
+					text: 'Chờ lấy hàng',
+					value: 3,
+				},
+				{
+					text: 'Đã giao',
+					value: 4,
+				},
+			],
+			onFilter: (value, record) => record.orderStatus.includes(value),
 			render: (value, record) => {
 				return (
 					<span style={{ color: formatColorStatus(ORDER_STATUS_ENUM[record?.orderStatus]?.id) }}>
