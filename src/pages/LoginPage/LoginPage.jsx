@@ -7,10 +7,10 @@ export default function LoginPage() {
 	const { user } = useSelector((state) => state.authSlice);
 	const navigate = useNavigate();
 	useEffect(() => {
-		if (_.isEmpty(user) == false) navigate('/product');
+		if (_.isEmpty(user) == false) navigate('/order');
 	}, [user]);
 	return (
-		<div className='w-full h-full d-flex justify-center items-center'>
+		<div className='w-[100vh] h-[100vh] d-flex justify-center items-center'>
 			<GoogleLoginBtn></GoogleLoginBtn>
 			{/* hjhjhj */}
 		</div>

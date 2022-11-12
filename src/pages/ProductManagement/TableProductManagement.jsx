@@ -17,15 +17,6 @@ export default function TableProductManagement() {
 
 	const [searchText, setSearchText] = useState('');
 
-	// useEffect(() => {
-	// 	if (productFilterredList) {
-	// 		let arrNew = productFilterredList.map((item) => {
-	// 			return { ...item, action: dispatch };
-	// 		});
-	// 		setProductData(arrNew);
-	// 	}
-	// }, [productFilterredList]);
-
 	useEffect(() => {
 		dispatch(getProductList({ page: 1, pageSize: 10 }));
 	}, []);

@@ -13,28 +13,26 @@ export default function SidebarTemplate() {
 		<div className='fixed left-0 bottom-0 top-20 h-full w-60'>
 			<div className='h-full w-full shadow-md'>
 				<div className='pt-16 px-5 flex flex-col justify-start space-y-8'>
+					<div className='text-lg font-medium'>
+						<NavLink to='/order' className={({ isActive }) => (isActive ? activeClassName : defaultClassName)}>
+							Đơn Hàng
+						</NavLink>
+					</div>
 					<div className='text-lg font-medium w-full'>
 						<NavLink to='/product' className={({ isActive }) => (isActive ? activeClassName : defaultClassName)}>
-							Quản lý sản phẩm
+							Sản phẩm
 						</NavLink>
 					</div>
 					<div className='text-lg font-medium w-full'>
 						<NavLink
 							to='/product-in-menu'
 							className={({ isActive }) => (isActive ? activeClassName : defaultClassName)}>
-							QL sản phẩm trong Menu
+							Menu
 						</NavLink>
 					</div>
 					<div className='text-lg font-medium w-full'>
-						<NavLink
-							to='/menu'
-							className={({ isActive }) => (isActive ? activeClassName : defaultClassName)}>
-							Quản lý Menu
-						</NavLink>
-					</div>
-					<div className='text-lg font-medium'>
-						<NavLink to='/order' className={({ isActive }) => (isActive ? activeClassName : defaultClassName)}>
-							Quản lí đơn hàng
+						<NavLink to='/menu' className={({ isActive }) => (isActive ? activeClassName : defaultClassName)}>
+							Danh sách Menu
 						</NavLink>
 					</div>
 				</div>
