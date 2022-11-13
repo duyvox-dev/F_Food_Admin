@@ -12,6 +12,7 @@ import {
 import { getOrderInfo, getOrderList, toggleEditOrderModal, toggleViewOrderDetail } from '../../redux/orderSlice';
 import { formatColorStatus } from '../../utils/formatColorStatus';
 import { vndCurrencyFormat } from '../../utils/currency';
+import { getListTimeSlot } from '../../redux/settingSlice';
 export default function TableOrderManagement() {
 	const { orderList } = useSelector((state) => state.orderSlice);
 	const { listTimeSlot } = useSelector((state) => state.settingSlice);
@@ -52,6 +53,7 @@ export default function TableOrderManagement() {
 	const [searchText, setSearchText] = useState('');
 
 	useEffect(() => {
+		dispatch(getListTimeSlot());
 		dispatch(getOrderList({ page: 1, pageSize: 20 }));
 	}, []);
 
