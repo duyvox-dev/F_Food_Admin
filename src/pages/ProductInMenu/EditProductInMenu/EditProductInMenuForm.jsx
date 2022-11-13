@@ -26,17 +26,27 @@ export default function EditProductInMenuForm() {
 
 	useEffect(() => {
 		setInitValue({
-			productId: currentProductInMenu?.productId,
+			productId: currentProductInMenu?.productMenuId,
+			menuId: currentProductInMenu?.menuId,
 			price: currentProductInMenu?.price,
+			active: 0,
 		});
 		setInitValue([
 			{
 				name: ['productId'],
-				value: currentProductInMenu?.productId,
+				value: currentProductInMenu?.productMenuId,
+			},
+			{
+				name: ['menuId'],
+				value: currentProductInMenu?.menuId,
 			},
 			{
 				name: ['price'],
 				value: currentProductInMenu?.price,
+			},
+			{
+				name: ['active'],
+				value: 0,
 			},
 		]);
 	}, []);
@@ -134,21 +144,6 @@ export default function EditProductInMenuForm() {
 								},
 							]}>
 							<Form.Item name='price'>
-								<InputNumber style={{ width: '100%' }} />
-							</Form.Item>
-						</Form.Item>
-
-						<Form.Item
-							//initialValue={currentProduct?.price}
-							label='Active'
-							//name='price'
-							hasFeedback
-							rules={[
-								{
-									required: true,
-								},
-							]}>
-							<Form.Item name='active'>
 								<InputNumber style={{ width: '100%' }} />
 							</Form.Item>
 						</Form.Item>
