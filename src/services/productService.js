@@ -16,19 +16,19 @@ export const productService = {
 
 	// product in menu
 	getProductListInMenu: ({ page, pageSize }) => {
-		return httpService.get(`/product-in-menu?page=${page}&pageSize=${pageSize}`)
+		return httpService.get(`/product-in-menu?page=1&pageSize=999`);
 	},
 	getProductInMenuInfo: (productID) => {
 		return httpService.get(`/product-in-menu/GetProductInMenuById?Id=${productID}`);
 	},
 	createProductInMenu: (data) => {
-		return httpService.post(`/product-in-menu/CreateProductInMenu`, data)
+		return httpService.post(`/product-in-menu/CreateProductInMenu`, data);
 	},
 	updateProductInMenu: ({ productID, newproductInfo }) => {
-		return httpService.put(`/product-in-menu/UpdateProductInMenu?productInMenuId=${productID}`, newproductInfo)
+		return httpService.put(`/product-in-menu/UpdateProductInMenu?productInMenuId=${productID}`, newproductInfo);
 	},
 	deleteProductInMenu: (productID) => {
-		console.log("id: ", productID)
-		return httpService.delete(`/product-in-menu/DeleteProductInMenu?productInMenuId=${productID}`)
-	}
+		console.log('id: ', productID);
+		return httpService.delete(`/product-in-menu/DeleteProductInMenu?productInMenuId=${productID}`);
+	},
 };
