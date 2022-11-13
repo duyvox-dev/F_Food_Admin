@@ -14,7 +14,14 @@ import { formatColorStatus } from '../../utils/formatColorStatus';
 import { vndCurrencyFormat } from '../../utils/currency';
 export default function TableOrderManagement() {
 	const { orderList } = useSelector((state) => state.orderSlice);
-
+	const { listTimeSlot } = useSelector((state) => state.settingSlice);
+	const [filteredInfo, setFilteredInfo] = useState({});
+	const handleChange = (pagination, filters, sorter) => {
+		setFilteredInfo(filters);
+	};
+	const clearFilters = () => {
+		setFilteredInfo({});
+	};
 	const ORDER_STATUS_ENUM = [
 		{
 			id: 0,
@@ -49,7 +56,7 @@ export default function TableOrderManagement() {
 	}, []);
 
 	useEffect(() => {
-		setOrderData(orderList.results);
+		setOrderData(orderList);
 	}, [orderList]);
 
 	const handleChangePage = (page) => {
@@ -102,6 +109,14 @@ export default function TableOrderManagement() {
 				}
 				return 0;
 			},
+			render: (value, record) => {
+				const timeSlot = listTimeSlot?.find((time) => time.id === record.timeSlotId);
+				return (
+					<span>
+						{timeSlot?.arriveTime} - {timeSlot?.checkoutTime}
+					</span>
+				);
+			},
 		},
 		{
 			title: 'Tổng số tiền',
@@ -145,7 +160,11 @@ export default function TableOrderManagement() {
 					value: 4,
 				},
 			],
-			onFilter: (value, record) => record.orderStatus.includes(value),
+			filteredValue: filteredInfo.orderStatus || null,
+			onFilter: (value, record) => {
+				console.log({ record, value });
+				return record.orderStatus === value;
+			},
 			render: (value, record) => {
 				return (
 					<span style={{ color: formatColorStatus(ORDER_STATUS_ENUM[record?.orderStatus]?.id) }}>
@@ -203,15 +222,18 @@ export default function TableOrderManagement() {
 				dataSource={orderData}
 				columns={columnsOrderManagement}
 				rowKey={'_id'}
-				pagination={{
-					total: orderList?.totalNumberOfRecords,
-					showTotal: (total) => `Total ${total} products`,
-					current: orderList?.pageNumber,
-					pageSize: orderList?.pageSize,
-					onChange: (page, pageSize) => {
-						handleChangePage({ current: page, pageSize: pageSize });
-					},
-				}}></Table>
+				onChange={handleChange}
+				// pagination={{
+				// 	total: orderList?.totalNumberOfRecords,
+				// 	showTotal: (total) => `Total ${total} products`,
+				// 	current: orderList?.pageNumber,
+				// 	pageSize: orderList?.pageSize,
+				// 	onChange: (page, pageSize) => {
+				// 		handleChangePage({ current: page, pageSize: pageSize });
+				// 	},
+				// }
+				// }
+			></Table>
 		</div>
 	);
 }
