@@ -13,34 +13,51 @@ import {
 	toggleEditProductInMenu,
 	toggleEditProductModal,
 } from '../../redux/productSlice';
+import { getMenuList } from '../../redux/menuSlice';
 export default function TableProductInMenu() {
 	const { productListInMenu } = useSelector((state) => state.productSlice);
-	const { categoryList } = useSelector((state) => state.categorySlice);
+	const { menuList } = useSelector((state) => state.menuSlice);
+
 	const [productData, setProductData] = useState([]);
+	const [menuData, setMenuData] = useState([]);
+	const [filteredInfo, setFilteredInfo] = useState({});
+
+	const handleChange = (pagination, filters, sorter) => {
+		setFilteredInfo(filters);
+	};
+
 	const dispatch = useDispatch();
 
 	const [searchText, setSearchText] = useState('');
 
 	useEffect(() => {
-		dispatch(getProductListInMenu({ page: 1, pageSize: 10 }));
+		dispatch(getProductListInMenu({ page: 1, pageSize: 1000 }));
 	}, []);
 
 	useEffect(() => {
 		setProductData(productListInMenu?.results);
 	}, [productListInMenu]);
 
-	const handleChangePage = (page) => {
-		const currentPage = page?.current ?? 1;
-		const pageSize = page?.pageSize ?? 10;
-		dispatch(getProductListInMenu({ page: currentPage, pageSize: pageSize }));
-	};
+	useEffect(() => {
+		dispatch(getMenuList({ page: 1, pageSize: 30 }));
+	}, []);
+
+	useEffect(() => {
+		setMenuData(menuList.results);
+	}, [menuList]);
+
+	// const handleChangePage = (page) => {
+	// 	const currentPage = page?.current ?? 1;
+	// 	const pageSize = page?.pageSize ?? 10;
+	// 	dispatch(getProductListInMenu({ page: currentPage, pageSize: pageSize }));
+	// };
 
 	const columnsProductManagement1 = [
 		{
-			title: 'Tên',
+			title: 'Tên sản phẩm',
 			dataIndex: 'productName',
 			key: 'productName',
-			align: 'center',
+			align: 'left',
 			sorter: true,
 			sorter: (a, b) => {
 				if (a.productName > b.productName) {
@@ -71,13 +88,14 @@ export default function TableProductInMenu() {
 			key: 'menuName',
 			align: 'center',
 			width: '15%',
-		},
-		{
-			title: 'Miêu tả',
-			dataIndex: 'detail',
-			key: 'detail',
-			align: 'center',
-			width: '20%',
+			filters: menuData?.map((item) => ({
+				text: item.menuName,
+				value: item.menuName,
+			})),
+			filteredValue: filteredInfo.menuName || null,
+			onFilter: (value, record) => {
+				return record.menuName.startsWith(value);
+			},
 		},
 		{
 			title: 'Hình ảnh',
@@ -113,14 +131,14 @@ export default function TableProductInMenu() {
 						<button
 							className='text-white bg-blue-600 px-4 py-2 rounded'
 							onClick={() => {
-								dispatch(getProductInMenuInfo(record.productId));
+								dispatch(getProductInMenuInfo(record.productMenuId));
 								dispatch(toggleEditProductInMenu());
 							}}>
 							Sửa
 						</button>
 						<button
 							className='text-white bg-red-600 px-4 py-2 rounded'
-							onClick={() => dispatch(deleteProductInMenu(record.productId))}>
+							onClick={() => dispatch(deleteProductInMenu(record.productMenuId))}>
 							Xóa
 						</button>
 					</div>
@@ -147,15 +165,17 @@ export default function TableProductInMenu() {
 				dataSource={productData}
 				columns={columnsProductManagement1}
 				rowKey={'_id'}
-				pagination={{
-					total: productListInMenu?.totalNumberOfRecords,
-					showTotal: (total) => `Total ${total} products`,
-					current: productListInMenu?.pageNumber,
-					pageSize: productListInMenu?.pageSize,
-					onChange: (page, pageSize) => {
-						handleChangePage({ current: page, pageSize: pageSize });
-					},
-				}}></Table>
+				onChange={handleChange}
+				// pagination={{
+				// 	total: productListInMenu?.totalNumberOfRecords,
+				// 	showTotal: (total) => `Total ${total} products`,
+				// 	current: productListInMenu?.pageNumber,
+				// 	pageSize: productListInMenu?.pageSize,
+				// 	onChange: (page, pageSize) => {
+				// 		handleChangePage({ current: page, pageSize: pageSize });
+				// 	},
+				// }}
+			></Table>
 		</div>
 	);
 }

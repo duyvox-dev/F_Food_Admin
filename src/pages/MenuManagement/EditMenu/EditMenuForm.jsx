@@ -4,10 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toggleEditProductModal, updateProduct } from '../../../redux/productSlice';
 import _ from 'lodash';
 import { toggleEditMenuModal, updateMenu } from '../../../redux/menuSlice';
+import { getListTimeSlot } from '../../../redux/settingSlice';
 const { Option } = Select;
 export default function EditMenuForm() {
 	const dispatch = useDispatch();
 	const { currentMenu } = useSelector((state) => state.menuSlice);
+
+	const { listTimeSlot } = useSelector((state) => state.settingSlice);
 
 	const [form] = Form.useForm();
 
@@ -35,7 +38,9 @@ export default function EditMenuForm() {
 		]);
 	}, []);
 
-	console.log('current menu: ', currentMenu);
+	useEffect(() => {
+		dispatch(getListTimeSlot());
+	}, []);
 
 	const validateMessages = {
 		required: '${label} không được để trống',
@@ -92,33 +97,6 @@ export default function EditMenuForm() {
 						</Form.Item>
 
 						{/* <Form.Item
-							initialValue={currentProduct?.categoryId}
-							label='Danh mục'
-							name='categoryId'
-							hasFeedback
-							rules={[
-								{
-									required: true,
-								},
-							]}>
-							<Select
-								defaultValue={categoryList[currentProduct?.categoryId]}
-								// name='categoryId'
-								// label='Danh mục'
-								style={{
-									width: '100%',
-								}}>
-								{categoryList?.map((category, index) => {
-									return (
-										<Option value={category.id} key={index}>
-											{category.categoryName}
-										</Option>
-									);
-								})}
-							</Select>
-						</Form.Item> */}
-
-						<Form.Item
 							//initialValue={currentProduct?.quantity}
 							label='Type'
 							//name='quantity'
@@ -131,7 +109,7 @@ export default function EditMenuForm() {
 							<Form.Item name='type'>
 								<InputNumber min={1} max={999} style={{ width: '100%' }} />
 							</Form.Item>
-						</Form.Item>
+						</Form.Item> */}
 						<Form.Item
 							//initialValue={currentProduct?.supplierStoreId}
 							label='Time slot'
@@ -143,7 +121,21 @@ export default function EditMenuForm() {
 								},
 							]}>
 							<Form.Item name='timeSlotId'>
-								<InputNumber style={{ width: '100%' }} />
+								<Select
+									//defaultValue={categoryList[currentProduct?.categoryId]}
+									// name='categoryId'
+									// label='Danh mục'
+									style={{
+										width: '100%',
+									}}>
+									{listTimeSlot?.map((timeSlot, index) => {
+										return (
+											<Option value={timeSlot.id} key={index}>
+												{timeSlot?.arriveTime} - {timeSlot?.checkoutTime}
+											</Option>
+										);
+									})}
+								</Select>
 							</Form.Item>
 						</Form.Item>
 
