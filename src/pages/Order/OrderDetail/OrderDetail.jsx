@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 import { getListTimeSlot } from '../../../redux/settingSlice';
 import moment from 'moment/moment';
+import { vndCurrencyFormat } from '../../../utils/currency';
 export default function OrderDetail() {
 	const dispatch = useDispatch();
 	const { currentOrder } = useSelector((state) => state.orderSlice);
@@ -74,7 +75,7 @@ export default function OrderDetail() {
 				</p>
 				<p className='text-lg'>
 					<span>
-						Địa chỉ giao hàng:{' '}
+						Giao tại:{' '}
 						<b>
 							{_.isEmpty(currentOrder?.roomNumber) === false && currentOrder?.orderType === 2
 								? currentOrder?.roomNumber
@@ -103,7 +104,18 @@ export default function OrderDetail() {
 			</div>
 			<div>
 				<h2 className=' font-semibold text-xl mt-5'>Thông tin đơn hàng</h2>
-				<Table columns={columns} dataSource={currentOrder?.orderDetails} />;
+				<Table columns={columns} dataSource={currentOrder?.orderDetails} pagination={false} />
+			</div>
+			<div className='mt-5'>
+				<p className='text-lg text-right'>
+					Tiền hàng: <b>{vndCurrencyFormat(currentOrder.totalAmount)}</b>
+				</p>
+				<p className='text-lg text-right'>
+					Vận chuyển: <b>{vndCurrencyFormat(currentOrder.shippingFee)}</b>
+				</p>
+				<p className='text-xl text-right py-2 border-t border-slate-100'>
+					<b className='text-rose-500'>Tổng: {vndCurrencyFormat(currentOrder.finalAmount)}</b>
+				</p>
 			</div>
 		</div>
 	);
