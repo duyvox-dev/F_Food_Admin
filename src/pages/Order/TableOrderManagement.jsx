@@ -12,6 +12,7 @@ import {
 import { getOrderInfo, getOrderList, toggleEditOrderModal, toggleViewOrderDetail } from '../../redux/orderSlice';
 import { formatColorStatus } from '../../utils/formatColorStatus';
 import { vndCurrencyFormat } from '../../utils/currency';
+import { getListTimeSlot } from '../../redux/settingSlice';
 export default function TableOrderManagement() {
 	const { orderList } = useSelector((state) => state.orderSlice);
 	const { listTimeSlot } = useSelector((state) => state.settingSlice);
@@ -59,6 +60,10 @@ export default function TableOrderManagement() {
 		setOrderData(orderList);
 	}, [orderList]);
 
+	useEffect(() => {
+		dispatch(getListTimeSlot());
+	}, []);
+
 	const handleChangePage = (page) => {
 		const currentPage = page?.current ?? 1;
 		const pageSize = page?.pageSize ?? 10;
@@ -67,7 +72,7 @@ export default function TableOrderManagement() {
 
 	const columnsOrderManagement = [
 		{
-			title: 'Tên đơn hàng',
+			title: 'Mã đơn hàng',
 			dataIndex: 'orderName',
 			key: 'orderName',
 			align: 'center',
@@ -81,7 +86,7 @@ export default function TableOrderManagement() {
 				}
 				return 0;
 			},
-			width: '25%',
+			width: '15%',
 			filteredValue: [searchText],
 			onFilter: (value, record) => {
 				return String(record.orderName).toLowerCase().includes(value.toLowerCase());
@@ -99,7 +104,7 @@ export default function TableOrderManagement() {
 			dataIndex: 'timeSlotId',
 			key: 'timeSlotId',
 			align: 'center',
-			width: '10%',
+			width: '15%',
 			sorter: (a, b) => {
 				if (a.timeSlotId > b.timeSlotId) {
 					return 1;
@@ -110,10 +115,10 @@ export default function TableOrderManagement() {
 				return 0;
 			},
 			render: (value, record) => {
-				const timeSlot = listTimeSlot?.find((time) => time.id === record.timeSlotId);
+				const timeSlotMapped = listTimeSlot?.find((time) => time.id === record.timeSlotId);
 				return (
 					<span>
-						{timeSlot?.arriveTime} - {timeSlot?.checkoutTime}
+						{timeSlotMapped?.arriveTime} - {timeSlotMapped?.checkoutTime}
 					</span>
 				);
 			},

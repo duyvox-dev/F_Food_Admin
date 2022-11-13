@@ -4,10 +4,12 @@ import { columnsProductManagement } from '../../utils/productManagement';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteProduct, getProductInfo, getProductList, toggleEditProductModal } from '../../redux/productSlice';
 import { getMenuInfo, getMenuList, toggleEditMenuModal } from '../../redux/menuSlice';
+import { getListTimeSlot } from '../../redux/settingSlice';
 export default function TableMenuManagement() {
 	const { menuList } = useSelector((state) => state.menuSlice);
-	//const { categoryList } = useSelector((state) => state.categorySlice);
+	const { listTimeSlot } = useSelector((state) => state.settingSlice);
 
+	const [timeSlot, setTimeSlot] = useState({});
 	const [menuData, setMenuData] = useState([]);
 	const dispatch = useDispatch();
 
@@ -21,6 +23,10 @@ export default function TableMenuManagement() {
 		setMenuData(menuList.results);
 	}, [menuList]);
 
+	useEffect(() => {
+		dispatch(getListTimeSlot());
+	}, []);
+
 	const handleChangePage = (page) => {
 		const currentPage = page?.current ?? 1;
 		const pageSize = page?.pageSize ?? 10;
@@ -32,7 +38,7 @@ export default function TableMenuManagement() {
 			title: 'Tên',
 			dataIndex: 'menuName',
 			key: 'menuName',
-			align: 'center',
+			align: 'left',
 			sorter: true,
 			sorter: (a, b) => {
 				if (a.menuName > b.menuName) {
@@ -43,25 +49,35 @@ export default function TableMenuManagement() {
 				}
 				return 0;
 			},
-			width: '25%',
+			width: '40%',
 			filteredValue: [searchText],
 			onFilter: (value, record) => {
 				return String(record.menuName).toLowerCase().includes(value.toLowerCase());
 			},
 		},
 		{
-			title: 'Type',
-			dataIndex: 'type',
-			key: 'type',
-			align: 'center',
-			width: '20%',
-		},
-		{
 			title: 'Time slot',
 			dataIndex: 'timeSlotId',
 			key: 'timeSlotId',
 			align: 'center',
-			width: '10%',
+			width: '20%',
+			sorter: (a, b) => {
+				if (a.timeSlotId > b.timeSlotId) {
+					return 1;
+				}
+				if (a.timeSlotId < b.timeSlotId) {
+					return -1;
+				}
+				return 0;
+			},
+			render: (value, record) => {
+				const timeSlotMapped = listTimeSlot?.find((time) => time.id === record.timeSlotId);
+				return (
+					<span>
+						{timeSlotMapped?.arriveTime} - {timeSlotMapped?.checkoutTime}
+					</span>
+				);
+			},
 		},
 		{
 			title: 'Thao tác',

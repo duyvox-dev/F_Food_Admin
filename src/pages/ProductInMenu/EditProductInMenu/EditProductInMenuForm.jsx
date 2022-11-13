@@ -80,7 +80,7 @@ export default function EditProductInMenuForm() {
 						autoComplete='off'>
 						<Form.Item
 							// initialValue=''
-							label='Menu ID'
+							label='Menu'
 							hasFeedback
 							rules={[
 								{
