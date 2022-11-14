@@ -9,6 +9,7 @@ import {
 	toggleAddProductInMenu,
 	toggleEditProductModal,
 } from '../../redux/productSlice';
+import { vndCurrencyFormat } from '../../utils/currency';
 export default function TableProductManagement() {
 	const { productFilterredList, productList } = useSelector((state) => state.productSlice);
 	const { categoryList } = useSelector((state) => state.categorySlice);
@@ -96,6 +97,9 @@ export default function TableProductManagement() {
 			key: 'price',
 			align: 'center',
 			width: '10%',
+			render: (value, record) => {
+				return <span>{vndCurrencyFormat(value)}</span>;
+			},
 		},
 
 		{
