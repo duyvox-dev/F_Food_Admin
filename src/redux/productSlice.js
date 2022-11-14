@@ -85,6 +85,20 @@ export const getProductListInMenu = createAsyncThunk(
 	}
 );
 
+// get product in menu by menu id
+export const getProductListInMenuByMenuId = createAsyncThunk(
+	'productList/getProductListInMenuByMenuId',
+	async (menuId, thunkAPI) => {
+		try {
+			const result = await productService.getProductListInMenuByMenuId(menuId);
+			return result.data;
+		} catch (error) {
+			message.error(error.response.data.message);
+			return thunkAPI.rejectWithValue();
+		}
+	}
+);
+
 export const getProductInMenuInfo = createAsyncThunk(
 	'productSlice/getProductInMenuInfo',
 	async (productID, thunkAPI) => {
@@ -155,6 +169,9 @@ const productSlice = createSlice({
 		currentProductInMenu: {},
 		modalAddProductInMenu: false,
 		modalEditProductInMenu: false,
+
+		productListInMenuByMenuId: [],
+		isSelect: undefined,
 	},
 	reducers: {
 		toggleEditProductModal: (state, action) => {
@@ -179,15 +196,15 @@ const productSlice = createSlice({
 			state.productList = action.payload;
 			state.productFilterredList = action.payload;
 		},
-		[getProductList.rejected]: (state, action) => {},
+		[getProductList.rejected]: (state, action) => { },
 		[getProductInfo.pending]: (state, action) => {
 			state.currentProduct = action.payload;
 		},
 		[getProductInfo.fulfilled]: (state, action) => {
 			state.currentProduct = action.payload;
 		},
-		[getProductInfo.rejected]: (state, action) => {},
-		[filterProduct.pending]: (state, action) => {},
+		[getProductInfo.rejected]: (state, action) => { },
+		[filterProduct.pending]: (state, action) => { },
 		[filterProduct.fulfilled]: (state, action) => {
 			state.productFilterredList = action.payload;
 		},
@@ -195,11 +212,24 @@ const productSlice = createSlice({
 		// get product list in menu
 		[getProductListInMenu.pending]: (state, action) => {
 			state.productListInMenu = [];
+			state.isSelect = false;
 		},
 		[getProductListInMenu.fulfilled]: (state, action) => {
 			state.productListInMenu = action.payload;
+			state.isSelect = false;
 		},
-		[getProductListInMenu.rejected]: (state, action) => {},
+		[getProductListInMenu.rejected]: (state, action) => { },
+
+		// get product list in menu by menu id
+		[getProductListInMenuByMenuId.pending]: (state, action) => {
+			state.productListInMenuByMenuId = [];
+			state.isSelect = true;
+		},
+		[getProductListInMenuByMenuId.fulfilled]: (state, action) => {
+			state.productListInMenuByMenuId = action.payload;
+			state.isSelect = true;
+		},
+		[getProductListInMenuByMenuId.rejected]: (state, action) => { },
 
 		[getProductInMenuInfo.pending]: (state, action) => {
 			state.currentProductInMenu = action.payload;
@@ -207,7 +237,7 @@ const productSlice = createSlice({
 		[getProductInMenuInfo.fulfilled]: (state, action) => {
 			state.currentProductInMenu = action.payload;
 		},
-		[getProductInMenuInfo.rejected]: (state, action) => {},
+		[getProductInMenuInfo.rejected]: (state, action) => { },
 	},
 });
 const { reducer, actions } = productSlice;

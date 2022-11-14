@@ -18,6 +18,11 @@ export const productService = {
 	getProductListInMenu: ({ page, pageSize }) => {
 		return httpService.get(`/product-in-menu?page=1&pageSize=999`);
 	},
+
+	getProductListInMenuByMenuId: (menuId) => {
+		return httpService.get(`/product-in-menu/GetProductInMenuByMenu?menuId=${menuId}`);
+	},
+
 	getProductInMenuInfo: (productID) => {
 		return httpService.get(`/product-in-menu/GetProductInMenuById?Id=${productID}`);
 	},

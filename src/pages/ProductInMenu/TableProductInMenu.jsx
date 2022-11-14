@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Input, Table } from 'antd';
+import { Input, Select, Table } from 'antd';
 import { columnsProductManagement } from '../../utils/productManagement';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -9,13 +9,15 @@ import {
 	getProductInMenuInfo,
 	getProductList,
 	getProductListInMenu,
+	getProductListInMenuByMenuId,
 	toggleAddProductInMenu,
 	toggleEditProductInMenu,
 	toggleEditProductModal,
 } from '../../redux/productSlice';
 import { getMenuList } from '../../redux/menuSlice';
+import { vndCurrencyFormat } from '../../utils/currency';
 export default function TableProductInMenu() {
-	const { productListInMenu } = useSelector((state) => state.productSlice);
+	const { productListInMenu, isSelect, productListInMenuByMenuId } = useSelector((state) => state.productSlice);
 	const { menuList } = useSelector((state) => state.menuSlice);
 
 	const [productData, setProductData] = useState([]);
@@ -26,17 +28,32 @@ export default function TableProductInMenu() {
 		setFilteredInfo(filters);
 	};
 
+	const handleChangeSelectMenu = (value) => {
+		console.log(`selected ${value}`);
+		dispatch(getProductListInMenuByMenuId(value));
+	};
+
 	const dispatch = useDispatch();
 
 	const [searchText, setSearchText] = useState('');
 
 	useEffect(() => {
-		dispatch(getProductListInMenu({ page: 1, pageSize: 1000 }));
+		if (isSelect) {
+			dispatch(getProductListInMenuByMenuId(1));
+		} else {
+			dispatch(getProductListInMenu({ page: 1, pageSize: 1000 }));
+		}
 	}, []);
 
 	useEffect(() => {
-		setProductData(productListInMenu?.results);
-	}, [productListInMenu]);
+		if (isSelect) {
+			setProductData(productListInMenuByMenuId?.results);
+		} else {
+			setProductData(productListInMenu?.results);
+		}
+	}, [productListInMenuByMenuId, productListInMenu]);
+
+	console.log('product list: ', productListInMenu);
 
 	useEffect(() => {
 		dispatch(getMenuList({ page: 1, pageSize: 30 }));
@@ -82,27 +99,27 @@ export default function TableProductInMenu() {
 			align: 'center',
 			width: '15%',
 		},
-		{
-			title: 'Tên Menu',
-			dataIndex: 'menuName',
-			key: 'menuName',
-			align: 'center',
-			width: '15%',
-			filters: menuData?.map((item) => ({
-				text: item.menuName,
-				value: item.menuName,
-			})),
-			filteredValue: filteredInfo.menuName || null,
-			onFilter: (value, record) => {
-				return record.menuName.startsWith(value);
-			},
-		},
+		// {
+		// 	title: 'Tên Menu',
+		// 	dataIndex: 'menuName',
+		// 	key: 'menuName',
+		// 	align: 'center',
+		// 	width: '15%',
+		// 	filters: menuData?.map((item) => ({
+		// 		text: item.menuName,
+		// 		value: item.menuName,
+		// 	})),
+		// 	filteredValue: filteredInfo.menuName || null,
+		// 	onFilter: (value, record) => {
+		// 		return record.menuName.startsWith(value);
+		// 	},
+		// },
 		{
 			title: 'Hình ảnh',
 			dataIndex: 'image',
 			key: 'image',
 			align: 'center',
-			width: '10%',
+			width: '15%',
 			render: (img) => {
 				return (
 					<div className='flex justify-center'>
@@ -117,7 +134,10 @@ export default function TableProductInMenu() {
 			dataIndex: 'price',
 			key: 'price',
 			align: 'center',
-			width: '10%',
+			width: '15%',
+			render: (value, record) => {
+				return <span>{vndCurrencyFormat(value)}</span>;
+			},
 		},
 
 		{
@@ -160,6 +180,21 @@ export default function TableProductInMenu() {
 					setSearchText(e.target.value);
 				}}
 			/>
+
+			<Select
+				//defaultValue='Buổi sáng'
+				placeholder='Chọn menu'
+				style={{
+					width: 240,
+					marginBottom: '20px',
+				}}
+				onChange={handleChangeSelectMenu}
+				options={menuData?.map((item) => ({
+					label: item.menuName,
+					value: item.id,
+				}))}
+			/>
+
 			<Table
 				bordered
 				dataSource={productData}
