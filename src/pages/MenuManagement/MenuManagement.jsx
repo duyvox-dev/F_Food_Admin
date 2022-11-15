@@ -8,12 +8,18 @@ import TableMenuManagement from './TableMenuManagement';
 import AddMenuModal from './AddMenu/AddMenuModal';
 import { toggleAddMenuModal } from '../../redux/menuSlice';
 import EditMenuModal from './EditMenu/EditMenuModal';
-
+import { message } from 'antd';
 export default function MenuManagement() {
 	let navigate = useNavigate();
 	const dispatch = useDispatch();
 	const [searchKey, setSearchKey] = useState('');
-
+	const { user } = useSelector((state) => state.authSlice);
+	useEffect(() => {
+		if (_.isEmpty(user)) {
+			navigate('/');
+			message.error('Vui lòng đăng nhập');
+		}
+	}, [user]);
 	useEffect(() => {
 		dispatch(getProductList());
 		dispatch(getCategoryList());

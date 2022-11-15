@@ -7,17 +7,25 @@ import { getCategoryList } from '../../redux/categorySlice';
 import TableOrderManagement from './TableOrderManagement';
 import OrderDetailModal from './OrderDetail/OrderDetailModal';
 import EditOrderModal from './EditOrder/EditOrderModal';
+import { message } from 'antd';
 
 export default function OrderManagement() {
 	const { user } = useSelector((state) => state.authSlice);
-	let navigate = useNavigate();
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 	const [searchKey, setSearchKey] = useState('');
 
 	const handleSearch = (searchValue) => {
 		setSearchKey(searchValue);
 		dispatch(filterProduct(searchValue));
 	};
+	useEffect(() => {
+		if (_.isEmpty(user)) {
+			navigate('/');
+			message.error('Vui lòng đăng nhập');
+		}
+	}, [user]);
+
 	document.title = 'F-Food | Product Management';
 	return (
 		<div>

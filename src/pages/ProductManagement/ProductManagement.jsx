@@ -8,6 +8,7 @@ import AddProductModal from './AddProduct/AddProductModal';
 import _ from 'lodash';
 import { getCategoryList } from '../../redux/categorySlice';
 import AddProductInMenuModal from '../ProductInMenu/AddProductInMenu/AddProductInMenuModal';
+import { message } from 'antd';
 export default function ProductManagement() {
 	const { user } = useSelector((state) => state.authSlice);
 	let navigate = useNavigate();
@@ -15,9 +16,11 @@ export default function ProductManagement() {
 	const [searchKey, setSearchKey] = useState('');
 
 	useEffect(() => {
-		if (_.isEmpty(user)) navigate('/');
+		if (_.isEmpty(user)) {
+			navigate('/');
+			message.error('Vui lòng đăng nhập');
+		}
 	}, [user]);
-
 	useEffect(() => {
 		dispatch(getProductList());
 		dispatch(getCategoryList());
