@@ -62,7 +62,7 @@ export default function EditProductInMenuForm() {
 		console.log('value: ', values);
 		dispatch(
 			updateProductInMenu({
-				productID: currentProductInMenu.productId,
+				productID: currentProductInMenu.productMenuId,
 				newproductInfo: values,
 			})
 		);
